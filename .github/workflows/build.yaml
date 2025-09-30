@@ -14,7 +14,7 @@ jobs:
           cache: 'maven'
           cache-dependency-path: 'work/hello/pom.xml' # optional
       - name: Build with Maven
-        working-directory: hello
+        working-directory: work/hello
         run: mvn -B package
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
