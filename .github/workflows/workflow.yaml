@@ -60,6 +60,6 @@ jobs:
           file: ${{ env.BACKEND_HOME }}/src/main/docker/Dockerfile
           platforms: linux/amd64, linux/arm64
           push: true
-          tags: ghcr.io/2025-cloud-hello-world/hello:latest
+          tags: ghcr.io/rradlbauer/2025-cloud-hello-world/hello:latest
 
 
