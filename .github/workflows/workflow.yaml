@@ -1,9 +1,13 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+on: [ push ]
 
 env:
   BACKEND_HOME: ./vehicle
+
+permissions:
+  packages: write
+  contents: read
 
 jobs:
   Explore-GitHub-Actions:
@@ -17,6 +21,14 @@ jobs:
           java-version: '21'
           cache: 'maven'
           cache-dependency-path: "${{ env.BACKEND_HOME }}/pom.xml" # optional
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable Docker BuildKit
+        run: echo "DOCKER_BUILDKIT=1" >> $GITHUB_ENV
       - name: Build with Maven
         working-directory: ${{ env.BACKEND_HOME }}
         run: mvn -B package
@@ -29,8 +41,25 @@ jobs:
           ls ./target
           pwd
           env
-      - name: Build docker image
-        working-directory: ${{ env.BACKEND_HOME }}
-        run: |
-          docker build -t hello --file ./src/main/docker/Dockerfile .
-          docker image ls
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+#      - name: Build docker image
+#        working-directory: ${{ env.BACKEND_HOME }}
+#        run: |
+#          docker build -t hello --file ./src/main/docker/Dockerfile .
+#          docker image ls
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.BACKEND_HOME }}
+          file: ${{ env.BACKEND_HOME }}/src/main/docker/Dockerfile
+          platforms: linux/amd64, linux/arm64
+          push: true
+          tags: ghcr.io/2025-cloud-hello-world/hello:latest
+
+
