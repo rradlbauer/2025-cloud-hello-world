@@ -32,6 +32,5 @@ jobs:
       - name: Build docker image
         working-directory: ${{ env.BACKEND_HOME }}
         run: |
-          ls ./target
           docker build -t hello --file ./src/main/docker/Dockerfile .
           docker image ls
