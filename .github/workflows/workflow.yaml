@@ -5,7 +5,6 @@ on: [push]
 env:
   BACKEND_HOME: ./vehicle
 
-
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-24.04
@@ -17,26 +16,21 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
-          cache-dependency-path: "${{env.BACKEND_HOME }}/pom.xml" # optional
+          cache-dependency-path: "${{ env.BACKEND_HOME }}/pom.xml" # optional
       - name: Build with Maven
-        working-directory: ${{env.BACKEND_HOME }}
+        working-directory: ${{ env.BACKEND_HOME }}
         run: mvn -B package
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: Run Hello
-        working-directory: ${{env.BACKEND_HOME }}
+      - name: List files in the repository
+        working-directory: ${{ env.BACKEND_HOME }}
         run: |
           ls 
           ls ./target
           pwd
           env
-      - name: build docker image
-        working-directory: ${{env.BACKEND_HOME }}
+      - name: Build docker image
+        working-directory: ${{ env.BACKEND_HOME }}
         run: |
-          docker build --file ./src/main/docker/Dockerfile -t hello .
+          docker build -t hello --file ./src/main/docker/Dockerfile .
           docker image ls
-          docker run hello
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
-
-
